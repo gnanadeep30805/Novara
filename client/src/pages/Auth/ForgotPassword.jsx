@@ -1,13 +1,11 @@
 import { useState } from "react";
 import { useAuth } from "../../context/AuthContext";
-import { useNavigate } from "react-router-dom";
 
 function ForgotPassword() {
     const [email, setEmail] = useState("");
     const [error, setError] = useState("");
     const [message, setMessage] = useState("");
     const { forgotPassword } = useAuth();
-    const navigate = useNavigate();
 
     const handleSubmit = async (e) => {
         e.preventDefault();

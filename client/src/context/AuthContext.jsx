@@ -20,36 +20,35 @@ export function AuthProvider({ children }) {
 
     const login = async (formData) => {
         try {
-            const res = await axios.post(
-                "http://localhost:5000/api/auth/login",
-                formData,
-                { withCredentials: true }
-            );
+            const res = await axios.post("/api/auth/login", formData, {
+                withCredentials: true,
+            });
             const userData = res.data.user;
             localStorage.setItem("token", res.data.token);
             localStorage.setItem("user", JSON.stringify(userData));
             setUser(userData);
             return { success: true, user: userData };
         } catch (error) {
+            const data = error.response?.data;
             return {
                 success: false,
-                error: error.response?.data?.message || "Login failed",
+                error: data?.message || "Login failed",
+                needsVerification: data?.needsVerification || false,
+                email: data?.email || formData.email,
             };
         }
     };
 
     const signup = async (formData) => {
         try {
-            const res = await axios.post(
-                "http://localhost:5000/api/auth/register",
-                formData,
-                { withCredentials: true }
-            );
-            const userData = res.data.user;
-            localStorage.setItem("token", res.data.token);
-            localStorage.setItem("user", JSON.stringify(userData));
-            setUser(userData);
-            return { success: true, user: userData };
+            const res = await axios.post("/api/auth/register", formData, {
+                withCredentials: true,
+            });
+            return {
+                success: true,
+                message: res.data.message,
+                email: res.data.email,
+            };
         } catch (error) {
             return {
                 success: false,
@@ -58,11 +57,25 @@ export function AuthProvider({ children }) {
         }
     };
 
-    const forgotPassword = async (email) => {
+    const resendVerification = async (email) => {
         try {
-            await axios.post("http://localhost:5000/api/auth/forgot-password", {
+            const res = await axios.post("/api/auth/resend-verification", {
                 email,
             });
+            return { success: true, message: res.data.message };
+        } catch (error) {
+            return {
+                success: false,
+                error:
+                    error.response?.data?.message ||
+                    "Failed to send verification email",
+            };
+        }
+    };
+
+    const forgotPassword = async (email) => {
+        try {
+            await axios.post("/api/auth/forgot-password", { email });
             return { success: true };
         } catch (error) {
             return {
@@ -82,7 +95,15 @@ export function AuthProvider({ children }) {
 
     return (
         <AuthContext.Provider
-            value={{ user, loading, login, signup, forgotPassword, logout }}
+            value={{
+                user,
+                loading,
+                login,
+                signup,
+                resendVerification,
+                forgotPassword,
+                logout,
+            }}
         >
             {children}
         </AuthContext.Provider>

@@ -1,4 +1,4 @@
-import { useState, useEffect } from "react";
+import { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { useAuth } from "../../context/AuthContext";
 
@@ -28,7 +28,9 @@ function Signup() {
 
         const result = await signup(formData);
         if (result.success) {
-            navigate("/dashboard");
+            navigate("/verify-email-pending", {
+                state: { email: result.email },
+            });
         } else {
             setError(result.error);
         }
