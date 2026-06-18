@@ -16,16 +16,6 @@ function ProtectedRoute({ children, adminOnly = false }) {
         return <Navigate to="/" replace />;
     }
 
-    if (!user.isVerified) {
-        return (
-            <Navigate
-                to="/verify-email-pending"
-                state={{ email: user.email }}
-                replace
-            />
-        );
-    }
-
     if (adminOnly && user.role !== "admin") {
         return <Navigate to="/dashboard" replace />;
     }

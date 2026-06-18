@@ -32,12 +32,9 @@ export function AuthProvider({ children }) {
             setUser(userData);
             return { success: true, user: userData };
         } catch (error) {
-            const data = error.response?.data;
             return {
                 success: false,
-                error: data?.message || "Login failed",
-                needsVerification: data?.needsVerification || false,
-                email: data?.email || formData.email,
+                error: error.response?.data?.message || "Login failed",
             };
         }
     };

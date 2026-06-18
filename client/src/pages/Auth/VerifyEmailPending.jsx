@@ -45,8 +45,8 @@ function VerifyEmailPending() {
                     <p className="font-semibold text-gray-800 mb-4">{email}</p>
                 )}
                 <p className="text-gray-500 text-sm mb-6">
-                    Click the link in the email to verify your account, then
-                    log in.
+                    Click the link in the email to verify your account. You can
+                    log in anytime — verification is not required to sign in.
                 </p>
 
                 <button
@@ -71,8 +71,8 @@ function VerifyEmailPending() {
                 )}
 
                 <p className="mt-6 text-gray-600">
-                    Already verified?{" "}
-                    <Link to="/" className="text-indigo-600 font-semibold">
+                    Want to sign in now?{" "}
+                    <Link to="/login" className="text-indigo-600 font-semibold">
                         Log in
                     </Link>
                 </p>

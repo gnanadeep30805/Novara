@@ -60,14 +60,6 @@ export const login = async (req, res) => {
             });
         }
 
-        if (!user.isVerified) {
-            return res.status(403).json({
-                message: "Please verify your email before logging in.",
-                needsVerification: true,
-                email: user.email,
-            });
-        }
-
         const token = generateToken(user._id);
 
         res.json({

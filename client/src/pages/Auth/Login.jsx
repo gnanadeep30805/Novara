@@ -5,15 +5,11 @@ import { Eye, EyeOff, GraduationCap, Shield, Loader2 } from "lucide-react";
 
 function Login() {
     const navigate = useNavigate();
-    const { login, resendVerification } = useAuth();
+    const { login } = useAuth();
 
     const [role, setRole] = useState("student");
     const [showPassword, setShowPassword] = useState(false);
     const [error, setError] = useState("");
-    const [needsVerification, setNeedsVerification] = useState(false);
-    const [unverifiedEmail, setUnverifiedEmail] = useState("");
-    const [resendStatus, setResendStatus] = useState("");
-    const [resending, setResending] = useState(false);
     const [submitting, setSubmitting] = useState(false);
 
     const [formData, setFormData] = useState({
@@ -27,16 +23,12 @@ function Login() {
             [e.target.name]: e.target.value,
         }));
         setError("");
-        setNeedsVerification(false);
-        setResendStatus("");
     };
 
     const handleSubmit = async (e) => {
         e.preventDefault();
         setSubmitting(true);
         setError("");
-        setNeedsVerification(false);
-        setResendStatus("");
 
         const result = await login({ ...formData, role });
         setSubmitting(false);
@@ -50,24 +42,7 @@ function Login() {
             return;
         }
 
-        if (result.needsVerification) {
-            setNeedsVerification(true);
-            setUnverifiedEmail(result.email);
-        }
         setError(result.error);
-    };
-
-    const handleResend = async () => {
-        setResending(true);
-        setResendStatus("");
-
-        const result = await resendVerification(unverifiedEmail);
-        setResending(false);
-        setResendStatus(
-            result.success
-                ? "Verification email sent! Check your inbox."
-                : result.error
-        );
     };
 
     return (
@@ -111,41 +86,8 @@ function Login() {
                 </div>
 
                 {error && (
-                    <div
-                        className={`mb-4 p-3 rounded-xl text-sm ${
-                            needsVerification
-                                ? "bg-amber-50 text-amber-800 border border-amber-200"
-                                : "bg-red-50 text-red-700 border border-red-200"
-                        }`}
-                    >
+                    <div className="mb-4 p-3 rounded-xl text-sm bg-red-50 text-red-700 border border-red-200">
                         {error}
-                    </div>
-                )}
-
-                {needsVerification && (
-                    <div className="mb-4">
-                        <button
-                            type="button"
-                            onClick={handleResend}
-                            disabled={resending}
-                            className="w-full border border-indigo-600 text-indigo-600 py-2 rounded-xl font-semibold hover:bg-indigo-50 transition disabled:opacity-50 flex items-center justify-center gap-2"
-                        >
-                            {resending && (
-                                <Loader2 size={16} className="animate-spin" />
-                            )}
-                            Resend verification email
-                        </button>
-                        {resendStatus && (
-                            <p
-                                className={`mt-2 text-sm text-center ${
-                                    resendStatus.includes("sent")
-                                        ? "text-green-600"
-                                        : "text-red-600"
-                                }`}
-                            >
-                                {resendStatus}
-                            </p>
-                        )}
                     </div>
                 )}
 
