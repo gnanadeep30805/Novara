@@ -1,13 +1,16 @@
 import { useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
-import axios from "axios";
-import { Eye, EyeOff, GraduationCap, Shield } from "lucide-react";
+import { useAuth } from "../../context/AuthContext";
+import { Eye, EyeOff, GraduationCap, Shield, Loader2 } from "lucide-react";
 
 function Login() {
     const navigate = useNavigate();
+    const { login } = useAuth();
 
     const [role, setRole] = useState("student");
     const [showPassword, setShowPassword] = useState(false);
+    const [error, setError] = useState("");
+    const [submitting, setSubmitting] = useState(false);
 
     const [formData, setFormData] = useState({
         email: "",
@@ -19,45 +22,32 @@ function Login() {
             ...prev,
             [e.target.name]: e.target.value,
         }));
+        setError("");
     };
 
     const handleSubmit = async (e) => {
         e.preventDefault();
+        setSubmitting(true);
+        setError("");
 
-        try {
-            const res = await axios.post(
-                "http://localhost:5000/api/auth/login",
-                {
-                    ...formData,
-                    role,
-                },
-                {
-                    withCredentials: true,
-                }
-            );
+        const result = await login({ ...formData, role });
+        setSubmitting(false);
 
-            const user = res.data.user;
-
-            localStorage.setItem("token", res.data.token);
-            localStorage.setItem("user", JSON.stringify(user));
-
-            if (user.role === "admin") {
+        if (result.success) {
+            if (result.user.role === "admin") {
                 navigate("/admin/dashboard");
             } else {
                 navigate("/dashboard");
             }
-        } catch (error) {
-            alert(
-                error.response?.data?.message || "Login Failed"
-            );
+            return;
         }
+
+        setError(result.error);
     };
 
     return (
         <div className="min-h-screen bg-slate-100 flex items-center justify-center p-5">
             <div className="bg-white shadow-2xl rounded-3xl w-full max-w-md p-8">
-
-                {/* Logo */}
                 <div className="text-center mb-8">
                     <h1 className="text-4xl font-bold text-indigo-600">
                         Novara
@@ -67,41 +57,45 @@ function Login() {
                     </p>
                 </div>
 
-                {/* Role Selector */}
                 <div className="flex bg-gray-100 rounded-xl p-1 mb-8">
-
                     <button
+                        type="button"
                         onClick={() => setRole("student")}
-                        className={`flex-1 py-3 rounded-xl flex items-center justify-center gap-2 font-semibold transition-all ${role === "student"
-                            ? "bg-indigo-600 text-white"
-                            : "text-gray-600"
-                            }`}
+                        className={`flex-1 py-3 rounded-xl flex items-center justify-center gap-2 font-semibold transition-all ${
+                            role === "student"
+                                ? "bg-indigo-600 text-white"
+                                : "text-gray-600"
+                        }`}
                     >
                         <GraduationCap size={18} />
                         Student
                     </button>
 
                     <button
+                        type="button"
                         onClick={() => setRole("admin")}
-                        className={`flex-1 py-3 rounded-xl flex items-center justify-center gap-2 font-semibold transition-all ${role === "admin"
-                            ? "bg-indigo-600 text-white"
-                            : "text-gray-600"
-                            }`}
+                        className={`flex-1 py-3 rounded-xl flex items-center justify-center gap-2 font-semibold transition-all ${
+                            role === "admin"
+                                ? "bg-indigo-600 text-white"
+                                : "text-gray-600"
+                        }`}
                     >
                         <Shield size={18} />
                         Admin
                     </button>
                 </div>
 
-                {/* Form */}
-                <form onSubmit={handleSubmit}>
+                {error && (
+                    <div className="mb-4 p-3 rounded-xl text-sm bg-red-50 text-red-700 border border-red-200">
+                        {error}
+                    </div>
+                )}
 
-                    {/* Email */}
+                <form onSubmit={handleSubmit}>
                     <div className="mb-5">
                         <label className="block mb-2 text-gray-700 font-medium">
                             Email
                         </label>
-
                         <input
                             type="email"
                             name="email"
@@ -113,12 +107,10 @@ function Login() {
                         />
                     </div>
 
-                    {/* Password */}
                     <div className="mb-3">
                         <label className="block mb-2 text-gray-700 font-medium">
                             Password
                         </label>
-
                         <div className="relative">
                             <input
                                 type={showPassword ? "text" : "password"}
@@ -129,7 +121,6 @@ function Login() {
                                 required
                                 className="w-full border border-gray-300 rounded-xl px-4 py-3 outline-none focus:border-indigo-600"
                             />
-
                             <button
                                 type="button"
                                 className="absolute right-4 top-4 text-gray-500"
@@ -146,7 +137,6 @@ function Login() {
                         </div>
                     </div>
 
-                    {/* Forgot Password */}
                     <div className="text-right mb-6">
                         <Link
                             to="/forgot-password"
@@ -156,17 +146,17 @@ function Login() {
                         </Link>
                     </div>
 
-                    {/* Login Button */}
                     <button
-                        className="w-full bg-indigo-600 text-white py-3 rounded-xl font-semibold hover:bg-indigo-700 transition"
+                        type="submit"
+                        disabled={submitting}
+                        className="w-full bg-indigo-600 text-white py-3 rounded-xl font-semibold hover:bg-indigo-700 transition disabled:opacity-50 flex items-center justify-center gap-2"
                     >
-                        Login as{" "}
-                        {role === "admin"
-                            ? "Admin"
-                            : "Student"}
+                        {submitting && (
+                            <Loader2 size={18} className="animate-spin" />
+                        )}
+                        Login as {role === "admin" ? "Admin" : "Student"}
                     </button>
 
-                    {/* Signup */}
                     <div className="text-center mt-6">
                         <p className="text-gray-600">
                             Don't have an account?{" "}

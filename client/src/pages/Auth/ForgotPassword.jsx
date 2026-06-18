@@ -1,13 +1,12 @@
 import { useState } from "react";
+import { Link } from "react-router-dom";
 import { useAuth } from "../../context/AuthContext";
-import { useNavigate } from "react-router-dom";
 
 function ForgotPassword() {
     const [email, setEmail] = useState("");
     const [error, setError] = useState("");
     const [message, setMessage] = useState("");
     const { forgotPassword } = useAuth();
-    const navigate = useNavigate();
 
     const handleSubmit = async (e) => {
         e.preventDefault();
@@ -50,7 +49,10 @@ function ForgotPassword() {
                 </form>
 
                 <p className="mt-4 text-center text-sm">
-                    Remembered your password? <a href="/login" className="text-indigo-600 hover:underline">Login</a>
+                    Remembered your password?{" "}
+                    <Link to="/login" className="text-indigo-600 hover:underline">
+                        Login
+                    </Link>
                 </p>
             </div>
         </div>

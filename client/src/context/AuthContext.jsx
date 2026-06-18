@@ -1,5 +1,10 @@
 import { createContext, useContext, useState, useEffect } from "react";
-import axios from "axios";
+import {
+    loginUser,
+    registerUser,
+    resendVerificationEmail,
+    forgotPassword as forgotPasswordRequest,
+} from "../services/authService";
 
 const AuthContext = createContext();
 
@@ -20,11 +25,7 @@ export function AuthProvider({ children }) {
 
     const login = async (formData) => {
         try {
-            const res = await axios.post(
-                "http://localhost:5000/api/auth/login",
-                formData,
-                { withCredentials: true }
-            );
+            const res = await loginUser(formData);
             const userData = res.data.user;
             localStorage.setItem("token", res.data.token);
             localStorage.setItem("user", JSON.stringify(userData));
@@ -40,16 +41,12 @@ export function AuthProvider({ children }) {
 
     const signup = async (formData) => {
         try {
-            const res = await axios.post(
-                "http://localhost:5000/api/auth/register",
-                formData,
-                { withCredentials: true }
-            );
-            const userData = res.data.user;
-            localStorage.setItem("token", res.data.token);
-            localStorage.setItem("user", JSON.stringify(userData));
-            setUser(userData);
-            return { success: true, user: userData };
+            const res = await registerUser(formData);
+            return {
+                success: true,
+                message: res.data.message,
+                email: res.data.email,
+            };
         } catch (error) {
             return {
                 success: false,
@@ -58,11 +55,23 @@ export function AuthProvider({ children }) {
         }
     };
 
+    const resendVerification = async (email) => {
+        try {
+            const res = await resendVerificationEmail(email);
+            return { success: true, message: res.data.message };
+        } catch (error) {
+            return {
+                success: false,
+                error:
+                    error.response?.data?.message ||
+                    "Failed to send verification email",
+            };
+        }
+    };
+
     const forgotPassword = async (email) => {
         try {
-            await axios.post("http://localhost:5000/api/auth/forgot-password", {
-                email,
-            });
+            await forgotPasswordRequest(email);
             return { success: true };
         } catch (error) {
             return {
@@ -82,7 +91,15 @@ export function AuthProvider({ children }) {
 
     return (
         <AuthContext.Provider
-            value={{ user, loading, login, signup, forgotPassword, logout }}
+            value={{
+                user,
+                loading,
+                login,
+                signup,
+                resendVerification,
+                forgotPassword,
+                logout,
+            }}
         >
             {children}
         </AuthContext.Provider>
