@@ -1,40 +1,13 @@
-const userSchema = new mongoose.Schema(
-  {
-    name: {
-      type: String,
-      required: true
-    },
+import mongoose from "mongoose";
 
-    email: {
-      type: String,
-      required: true,
-      unique: true
-    },
+const connectDB = async () => {
+    try {
+        const conn = await mongoose.connect(process.env.MONGODB_URI);
+        console.log(`MongoDB Connected: ${conn.connection.host}`);
+    } catch (error) {
+        console.error(`MongoDB connection error: ${error.message}`);
+        process.exit(1);
+    }
+};
 
-    password: {
-      type: String,
-      required: true
-    },
-
-    role: {
-      type: String,
-      enum: ["student", "admin"],
-      default: "student"
-    },
-
-    profilePicture: {
-      type: String,
-      default: ""
-    },
-
-    isVerified: {
-      type: Boolean,
-      default: false
-    },
-
-    resetPasswordToken: String,
-    resetPasswordExpire: Date
-  },
-  {
-    timestamps: true
-  });
+export default connectDB;
