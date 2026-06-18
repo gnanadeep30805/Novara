@@ -1,4 +1,5 @@
 import { useState } from "react";
+import { Link } from "react-router-dom";
 import { useAuth } from "../../context/AuthContext";
 
 function ForgotPassword() {
@@ -48,7 +49,10 @@ function ForgotPassword() {
                 </form>
 
                 <p className="mt-4 text-center text-sm">
-                    Remembered your password? <a href="/login" className="text-indigo-600 hover:underline">Login</a>
+                    Remembered your password?{" "}
+                    <Link to="/login" className="text-indigo-600 hover:underline">
+                        Login
+                    </Link>
                 </p>
             </div>
         </div>

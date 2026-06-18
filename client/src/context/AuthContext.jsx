@@ -1,5 +1,10 @@
 import { createContext, useContext, useState, useEffect } from "react";
-import axios from "axios";
+import {
+    loginUser,
+    registerUser,
+    resendVerificationEmail,
+    forgotPassword as forgotPasswordRequest,
+} from "../services/authService";
 
 const AuthContext = createContext();
 
@@ -20,9 +25,7 @@ export function AuthProvider({ children }) {
 
     const login = async (formData) => {
         try {
-            const res = await axios.post("/api/auth/login", formData, {
-                withCredentials: true,
-            });
+            const res = await loginUser(formData);
             const userData = res.data.user;
             localStorage.setItem("token", res.data.token);
             localStorage.setItem("user", JSON.stringify(userData));
@@ -41,9 +44,7 @@ export function AuthProvider({ children }) {
 
     const signup = async (formData) => {
         try {
-            const res = await axios.post("/api/auth/register", formData, {
-                withCredentials: true,
-            });
+            const res = await registerUser(formData);
             return {
                 success: true,
                 message: res.data.message,
@@ -59,9 +60,7 @@ export function AuthProvider({ children }) {
 
     const resendVerification = async (email) => {
         try {
-            const res = await axios.post("/api/auth/resend-verification", {
-                email,
-            });
+            const res = await resendVerificationEmail(email);
             return { success: true, message: res.data.message };
         } catch (error) {
             return {
@@ -75,7 +74,7 @@ export function AuthProvider({ children }) {
 
     const forgotPassword = async (email) => {
         try {
-            await axios.post("/api/auth/forgot-password", { email });
+            await forgotPasswordRequest(email);
             return { success: true };
         } catch (error) {
             return {

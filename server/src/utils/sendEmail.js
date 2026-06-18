@@ -20,7 +20,7 @@ const getTransporter = () =>
 
 export const sendVerificationEmail = async (email, token) => {
     const clientUrl = process.env.CLIENT_URL || "http://localhost:3000";
-    const verifyUrl = `${clientUrl}/verify-email/${token}`;
+    const verifyUrl = `${clientUrl}/#/verify-email/${token}`;
 
     if (!isEmailConfigured()) {
         console.log("\n--- Email verification (SMTP not configured) ---");
