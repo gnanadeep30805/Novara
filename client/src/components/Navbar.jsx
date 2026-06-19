@@ -3,6 +3,7 @@ import { Link, useNavigate, useLocation } from "react-router-dom";
 import { useAuth } from "../context/AuthContext";
 import ThemeToggle from "./ThemeToggle";
 import axios from "axios";
+import logo from "../assets/novara-logo.png";
 
 function Navbar() {
     const { user, logout } = useAuth();
@@ -92,9 +93,9 @@ function Navbar() {
                     {/* Logo */}
                     <Link
                         to="/dashboard"
-                        className="text-2xl font-black text-indigo-600 tracking-tight"
+                        className="flex items-center gap-2"
                     >
-                        Novara
+                        <img src={logo} alt="Novara" className="h-8 w-auto object-contain" />
                     </Link>
 
                     {/* Desktop Menu */}
@@ -308,7 +309,7 @@ function Navbar() {
                         >
                             Profile
                         </Link>
-                        <ThemeToggle />
+
                         {user?.role === "admin" && (
                             <Link
                                 to="/admin/dashboard"
@@ -324,7 +325,7 @@ function Navbar() {
                         >
                             Logout
                         </button>
-
+                       
                     </div>
                 )}
             </div>

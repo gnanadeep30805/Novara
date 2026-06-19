@@ -1,4 +1,5 @@
 import { useNavigate } from "react-router-dom";
+import logo from "../assets/novara-logo.png";
 
 function Home() {
     const navigate = useNavigate();
@@ -75,9 +76,12 @@ function Home() {
             {/* Public Header/Navbar */}
             <header className="bg-white border-b border-slate-100 sticky top-0 z-50">
                 <div className="max-w-7xl mx-auto px-6 h-16 flex items-center justify-between">
-                    <span className="text-2xl font-black text-indigo-600 tracking-tight cursor-pointer" onClick={() => navigate("/")}>
-                        Novara
-                    </span>
+                    <img
+                        src={logo}
+                        alt="Novara"
+                        className="h-8 w-auto object-contain cursor-pointer"
+                        onClick={() => navigate("/")}
+                    />
                     
                     <nav className="hidden md:flex gap-8 text-sm font-bold text-gray-500">
                         <a href="#features" className="hover:text-indigo-600 transition-colors">Features</a>
@@ -225,7 +229,7 @@ function Home() {
             {/* Footer */}
             <footer className="border-t border-slate-200/50 bg-white py-12 text-center text-xs text-gray-400 font-bold uppercase tracking-wider">
                 <div className="max-w-7xl mx-auto px-6">
-                    <span className="text-indigo-600 text-sm font-black tracking-wider block mb-3">Novara</span>
+                    <img src={logo} alt="Novara" className="h-6 w-auto object-contain mx-auto mb-3" />
                     &copy; 2026 Novara AI-Powered Placement ecosystem. All rights reserved.
                 </div>
             </footer>

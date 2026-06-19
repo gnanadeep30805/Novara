@@ -1,6 +1,7 @@
 import { useState } from "react";
 import { Link } from "react-router-dom";
 import { useAuth } from "../../context/AuthContext";
+import logo from "../../assets/novara-logo.png";
 
 function ForgotPassword() {
     const [email, setEmail] = useState("");
@@ -22,9 +23,12 @@ function ForgotPassword() {
     };
 
     return (
-        <div className="min-h-screen flex items-center justify-center bg-gray-50">
-            <div className="bg-white p-8 rounded-lg shadow-md w-full max-w-md">
-                <h2 className="text-2xl font-bold mb-6 text-center text-gray-800">Forgot Password</h2>
+        <div className="min-h-screen bg-slate-100 flex items-center justify-center p-5">
+            <div className="bg-white shadow-2xl rounded-3xl w-full max-w-md p-8">
+                <div className="text-center mb-6 flex flex-col items-center">
+                    <img src={logo} alt="Novara" className="h-16 w-auto object-contain mb-4" />
+                    <h2 className="text-2xl font-bold text-gray-800">Forgot Password</h2>
+                </div>
                 {message && <p className="text-green-600 mb-4 text-center">{message}</p>}
                 {error && <p className="text-red-500 mb-4 text-center">{error}</p>}
 

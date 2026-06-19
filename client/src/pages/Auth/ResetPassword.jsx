@@ -1,6 +1,7 @@
 import { useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
 import { Eye, EyeOff, Lock, Loader2 } from "lucide-react";
+import logo from "../../assets/novara-logo.png";
 
 function ResetPassword() {
     const navigate = useNavigate();
@@ -53,11 +54,9 @@ function ResetPassword() {
     return (
         <div className="min-h-screen bg-slate-100 flex items-center justify-center p-5">
             <div className="bg-white shadow-2xl rounded-3xl w-full max-w-md p-8">
-                <div className="text-center mb-8">
-                    <h1 className="text-4xl font-bold text-indigo-600">
-                        Novara
-                    </h1>
-                    <p className="text-gray-500 mt-2">
+                <div className="text-center mb-8 flex flex-col items-center">
+                    <img src={logo} alt="Novara" className="h-16 w-auto object-contain mb-4" />
+                    <p className="text-gray-500">
                         Reset Your Password
                     </p>
                 </div>

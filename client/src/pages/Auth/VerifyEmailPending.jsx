@@ -2,6 +2,7 @@ import { useState } from "react";
 import { Link, useLocation } from "react-router-dom";
 import { useAuth } from "../../context/AuthContext";
 import { Mail, Loader2 } from "lucide-react";
+import logo from "../../assets/novara-logo.png";
 
 function VerifyEmailPending() {
     const location = useLocation();
@@ -31,8 +32,9 @@ function VerifyEmailPending() {
 
     return (
         <div className="min-h-screen bg-slate-100 flex items-center justify-center p-5">
-            <div className="bg-white shadow-2xl rounded-3xl w-full max-w-md p-8 text-center">
-                <Mail className="mx-auto text-indigo-600 mb-4" size={48} />
+            <div className="bg-white shadow-2xl rounded-3xl w-full max-w-md p-8 text-center flex flex-col items-center">
+                <img src={logo} alt="Novara" className="h-12 w-auto object-contain mb-6" />
+                <Mail className="text-indigo-600 mb-4" size={48} />
 
                 <h2 className="text-2xl font-bold text-gray-800 mb-2">
                     Check your email
