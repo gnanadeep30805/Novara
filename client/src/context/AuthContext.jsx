@@ -15,13 +15,13 @@ export function AuthProvider({ children }) {
     const [loading, setLoading] = useState(true);
 
     useEffect(() => {
-        const storedUser = localStorage.getItem("user");
-        const token = localStorage.getItem("token");
-        if (storedUser && token) {
-            setUser(JSON.parse(storedUser));
-        }
-        setLoading(false);
-    }, []);
+    const storedUser = localStorage.getItem("user");
+    const token = localStorage.getItem("token");
+    if (storedUser && token) {
+        setUser(JSON.parse(storedUser));
+    }
+    setLoading(false);
+}, []);
 
     const login = async (formData) => {
         try {
@@ -89,6 +89,11 @@ export function AuthProvider({ children }) {
         setUser(null);
     };
 
+    const updateUser = (updatedUserData) => {
+        localStorage.setItem("user", JSON.stringify(updatedUserData));
+        setUser(updatedUserData);
+    };
+
     return (
         <AuthContext.Provider
             value={{
@@ -99,6 +104,7 @@ export function AuthProvider({ children }) {
                 resendVerification,
                 forgotPassword,
                 logout,
+                updateUser,
             }}
         >
             {children}

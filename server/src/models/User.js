@@ -33,6 +33,50 @@ const userSchema = new mongoose.Schema(
         verificationTokenExpire: Date,
         resetPasswordToken: String,
         resetPasswordExpire: Date,
+        skills: {
+            type: [String],
+            default: [],
+        },
+        careerGoal: {
+            type: String,
+            default: "",
+        },
+        targetCompany: {
+            type: String,
+            default: "",
+        },
+        experienceLevel: {
+            type: String,
+            default: "",
+        },
+        twoFactorEnabled: {
+            type: Boolean,
+            default: false,
+        },
+        twoFactorSecret: {
+            type: String,
+            default: "",
+        },
+        xp: {
+            type: Number,
+            default: 0,
+        },
+        level: {
+            type: Number,
+            default: 1,
+        },
+        streak: {
+            type: Number,
+            default: 0,
+        },
+        lastActive: {
+            type: Date,
+            default: Date.now,
+        },
+        studyHours: {
+            type: Number,
+            default: 0,
+        },
     },
     {
         timestamps: true,

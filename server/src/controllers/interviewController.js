@@ -2,7 +2,7 @@ import Interview from "../models/Interview.js";
 import {
   generateInterviewQuestions,
   evaluateAnswer,
-} from "../services/grokService.js";
+} from "../services/geminiService.js";
 
 /**
  * Create Interview
@@ -147,6 +147,8 @@ export const submitAnswer = async (req, res) => {
       answer,
       score: evaluation.score,
       feedback: evaluation.feedback,
+      improvement: evaluation.improvement,
+      correctAnswer: evaluation.correctAnswer,
     });
 
     await interview.save();

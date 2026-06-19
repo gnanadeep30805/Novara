@@ -6,20 +6,27 @@ function ProtectedRoute({ children, adminOnly = false }) {
 
     if (loading) {
         return (
-            <div className="min-h-screen flex items-center justify-center">
-                <p className="text-gray-600">Loading...</p>
+            <div className="min-h-screen flex items-center justify-center bg-slate-100">
+                <div className="bg-white shadow-lg rounded-2xl px-8 py-6">
+                    <p className="text-lg font-medium text-gray-700">
+                        Loading...
+                    </p>
+                </div>
             </div>
         );
     }
 
+    // Not Logged In
     if (!user) {
-        return <Navigate to="/" replace />;
+        return <Navigate to="/login" replace />;
     }
 
+    // Admin Route Protection
     if (adminOnly && user.role !== "admin") {
         return <Navigate to="/dashboard" replace />;
     }
 
+    // Student trying to access admin dashboard
     if (!adminOnly && user.role === "admin") {
         return <Navigate to="/admin/dashboard" replace />;
     }

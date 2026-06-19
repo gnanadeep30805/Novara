@@ -1,9 +1,9 @@
-import dotenv from "dotenv";
-dotenv.config();
+import 'dotenv/config';
 
 console.log("PORT =", process.env.PORT);
 console.log("MONGO_URI =", process.env.MONGO_URI);
 console.log("JWT_SECRET =", process.env.JWT_SECRET);
+console.log("OPENAI KEY =", process.env.OPENAI_API_KEY);
 import app from "./app.js";
 import connectDB from "./config/db.js";
 
