@@ -1,10 +1,13 @@
 import { useState } from "react";
-import { Link, useNavigate } from "react-router-dom";
+import { Link, useNavigate, useParams } from "react-router-dom";
 import { Eye, EyeOff, Lock, Loader2 } from "lucide-react";
+import { resetPassword } from "../../services/authService";
+import { getErrorMessage } from "../../config/api";
 import logo from "../../assets/novara-logo.png";
 
 function ResetPassword() {
     const navigate = useNavigate();
+    const { token } = useParams();
 
     const [showPassword, setShowPassword] = useState(false);
     const [showConfirmPassword, setShowConfirmPassword] = useState(false);
@@ -28,24 +31,31 @@ function ResetPassword() {
     const handleSubmit = async (e) => {
         e.preventDefault();
 
+        if (!token) {
+            setError("Invalid reset link. Please request a new one.");
+            return;
+        }
+
         if (formData.password !== formData.confirmPassword) {
             setError("Passwords do not match");
             return;
         }
 
+        if (formData.password.length < 6) {
+            setError("Password must be at least 6 characters");
+            return;
+        }
+
         try {
             setSubmitting(true);
-
-            // API Call Here
-            // await authService.resetPassword(formData.password);
-
-            setSuccess("Password reset successfully!");
+            const res = await resetPassword(token, formData.password);
+            setSuccess(res.data.message || "Password reset successfully!");
 
             setTimeout(() => {
                 navigate("/login");
             }, 2000);
         } catch (err) {
-            setError("Failed to reset password");
+            setError(getErrorMessage(err, "Failed to reset password"));
         } finally {
             setSubmitting(false);
         }

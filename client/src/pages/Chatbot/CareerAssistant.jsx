@@ -1,6 +1,10 @@
 import { useState, useEffect, useRef } from "react";
 import Navbar from "../../components/Navbar";
-import axios from "axios";
+import {
+    sendChatMessage,
+    getChatHistory,
+    clearChatHistory,
+} from "../../services/chatbotService";
 
 function CareerAssistant() {
     const [messages, setMessages] = useState([]);
@@ -30,15 +34,7 @@ function CareerAssistant() {
 
     const fetchChatHistory = async () => {
         try {
-            const token = localStorage.getItem("token");
-            const res = await axios.get(
-                "http://localhost:5000/api/ai/chat",
-                {
-                    headers: {
-                        Authorization: `Bearer ${token}`
-                    }
-                }
-            );
+            const res = await getChatHistory();
             if (res.data.success) {
                 setMessages(res.data.chatHistory || []);
             }
@@ -61,16 +57,7 @@ function CareerAssistant() {
         setLoading(true);
 
         try {
-            const token = localStorage.getItem("token");
-            const res = await axios.post(
-                "http://localhost:5000/api/ai/chat",
-                { message: text },
-                {
-                    headers: {
-                        Authorization: `Bearer ${token}`
-                    }
-                }
-            );
+            const res = await sendChatMessage(text);
 
             if (res.data.success) {
                 // Replace message state with server sync to ensure DB indices align
@@ -91,15 +78,7 @@ function CareerAssistant() {
     const handleClearChat = async () => {
         if (!window.confirm("Are you sure you want to clear your chat history?")) return;
         try {
-            const token = localStorage.getItem("token");
-            const res = await axios.delete(
-                "http://localhost:5000/api/ai/chat",
-                {
-                    headers: {
-                        Authorization: `Bearer ${token}`
-                    }
-                }
-            );
+            const res = await clearChatHistory();
             if (res.data.success) {
                 setMessages([]);
             }

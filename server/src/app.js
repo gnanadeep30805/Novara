@@ -14,8 +14,24 @@ import adminRoutes from "./routes/adminRoutes.js";
 const app = express();
 
 // Middleware
+const allowedOrigins = [
+    "http://localhost:3000",
+    "http://localhost:3001",
+    process.env.CLIENT_URL,
+].filter(Boolean);
+
 app.use(cors({
-    origin: ["http://localhost:3000", "http://localhost:3001"],
+    origin(origin, callback) {
+        if (
+            !origin ||
+            allowedOrigins.includes(origin) ||
+            origin.endsWith(".vercel.app")
+        ) {
+            callback(null, true);
+        } else {
+            callback(new Error(`CORS blocked for origin: ${origin}`));
+        }
+    },
     credentials: true,
 }));
 app.use(express.json());

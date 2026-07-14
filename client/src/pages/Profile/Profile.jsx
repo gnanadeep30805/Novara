@@ -1,7 +1,7 @@
 import { useState, useEffect } from "react";
 import { useAuth } from "../../context/AuthContext";
 import Navbar from "../../components/Navbar";
-import axios from "axios";
+import { updateProfile } from "../../services/userService";
 
 function Profile() {
     const { user, updateUser } = useAuth();
@@ -49,23 +49,14 @@ function Profile() {
         setIsError(false);
 
         try {
-            const token = localStorage.getItem("token");
-            const res = await axios.put(
-                "http://localhost:5000/api/users/profile",
-                {
-                    name,
-                    careerGoal,
-                    targetCompany,
-                    experienceLevel,
-                    twoFactorEnabled,
-                    skills
-                },
-                {
-                    headers: {
-                        Authorization: `Bearer ${token}`
-                    }
-                }
-            );
+            const res = await updateProfile({
+                name,
+                careerGoal,
+                targetCompany,
+                experienceLevel,
+                twoFactorEnabled,
+                skills,
+            });
 
             if (res.data.success) {
                 updateUser(res.data.user);

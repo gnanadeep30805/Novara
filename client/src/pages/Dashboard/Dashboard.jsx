@@ -1,7 +1,8 @@
 import { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import { useAuth } from "../../context/AuthContext";
-import axios from "axios";
+import { getInterviews } from "../../services/interviewService";
+import { getAnalytics } from "../../services/analyticsService";
 import Navbar from "../../components/Navbar";
 
 function Dashboard() {
@@ -38,27 +39,8 @@ function Dashboard() {
 
     const fetchStats = async () => {
         try {
-            const token = localStorage.getItem("token");
-
-            // Fetch Interviews
-            const interviewRes = await axios.get(
-                "http://localhost:5000/api/interviews",
-                {
-                    headers: {
-                        Authorization: `Bearer ${token}`,
-                    },
-                }
-            );
-
-            // Fetch Analytics / Gamification data
-            const analyticsRes = await axios.get(
-                "http://localhost:5000/api/analytics",
-                {
-                    headers: {
-                        Authorization: `Bearer ${token}`,
-                    },
-                }
-            ).catch(() => null);
+            const interviewRes = await getInterviews();
+            const analyticsRes = await getAnalytics().catch(() => null);
 
             const interviews = interviewRes.data.interviews || [];
             const completedCount = interviews.filter(i => i.status === "completed").length;

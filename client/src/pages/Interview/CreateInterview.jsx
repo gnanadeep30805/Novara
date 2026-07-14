@@ -235,7 +235,7 @@
 
 import { useState } from "react";
 import { useNavigate } from "react-router-dom";
-import axios from "axios";
+import { createInterview } from "../../services/interviewService";
 import Navbar from "../../components/Navbar";
 
 function CreateInterview() {
@@ -264,17 +264,7 @@ function CreateInterview() {
             setLoading(true);
             setError("");
 
-            const token = localStorage.getItem("token");
-
-            const res = await axios.post(
-                "http://localhost:5000/api/interviews/create",
-                formData,
-                {
-                    headers: {
-                        Authorization: `Bearer ${token}`,
-                    },
-                }
-            );
+            const res = await createInterview(formData);
 
             navigate(`/interview/${res.data.interview._id}`);
         } catch (err) {

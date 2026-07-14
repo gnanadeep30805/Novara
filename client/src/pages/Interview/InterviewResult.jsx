@@ -1,6 +1,6 @@
 import { useEffect, useState } from "react";
 import { useNavigate, useParams } from "react-router-dom";
-import axios from "axios";
+import { getInterviewById } from "../../services/interviewService";
 import Navbar from "../../components/Navbar";
 
 function InterviewResult() {
@@ -18,16 +18,7 @@ function InterviewResult() {
 
     const fetchInterviewResult = async () => {
         try {
-            const token = localStorage.getItem("token");
-
-            const res = await axios.get(
-                `http://localhost:5000/api/interviews/${id}`,
-                {
-                    headers: {
-                        Authorization: `Bearer ${token}`,
-                    },
-                }
-            );
+            const res = await getInterviewById(id);
 
             setInterview(res.data.interview);
         } catch (err) {

@@ -5,6 +5,7 @@ import {
     resendVerificationEmail,
     forgotPassword as forgotPasswordRequest,
 } from "../services/authService";
+import { getErrorMessage } from "../config/api";
 
 const AuthContext = createContext();
 
@@ -15,13 +16,13 @@ export function AuthProvider({ children }) {
     const [loading, setLoading] = useState(true);
 
     useEffect(() => {
-    const storedUser = localStorage.getItem("user");
-    const token = localStorage.getItem("token");
-    if (storedUser && token) {
-        setUser(JSON.parse(storedUser));
-    }
-    setLoading(false);
-}, []);
+        const storedUser = localStorage.getItem("user");
+        const token = localStorage.getItem("token");
+        if (storedUser && token) {
+            setUser(JSON.parse(storedUser));
+        }
+        setLoading(false);
+    }, []);
 
     const login = async (formData) => {
         try {
@@ -34,7 +35,7 @@ export function AuthProvider({ children }) {
         } catch (error) {
             return {
                 success: false,
-                error: error.response?.data?.message || "Login failed",
+                error: getErrorMessage(error, "Login failed"),
             };
         }
     };
@@ -50,7 +51,7 @@ export function AuthProvider({ children }) {
         } catch (error) {
             return {
                 success: false,
-                error: error.response?.data?.message || "Signup failed",
+                error: getErrorMessage(error, "Signup failed"),
             };
         }
     };
@@ -62,9 +63,10 @@ export function AuthProvider({ children }) {
         } catch (error) {
             return {
                 success: false,
-                error:
-                    error.response?.data?.message ||
-                    "Failed to send verification email",
+                error: getErrorMessage(
+                    error,
+                    "Failed to send verification email"
+                ),
             };
         }
     };
@@ -76,9 +78,7 @@ export function AuthProvider({ children }) {
         } catch (error) {
             return {
                 success: false,
-                error:
-                    error.response?.data?.message ||
-                    "Failed to send reset email",
+                error: getErrorMessage(error, "Failed to send reset email"),
             };
         }
     };

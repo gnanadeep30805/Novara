@@ -1,7 +1,7 @@
 import { useState, useEffect } from "react";
 import { useParams, useNavigate } from "react-router-dom";
 import Navbar from "../../components/Navbar";
-import axios from "axios";
+import { getSession, submitQuiz } from "../../services/preparationService";
 
 function QuizSession() {
     const { id } = useParams();
@@ -20,15 +20,7 @@ function QuizSession() {
 
     const fetchQuiz = async () => {
         try {
-            const token = localStorage.getItem("token");
-            const res = await axios.get(
-                `http://localhost:5000/api/preparation/${id}`,
-                {
-                    headers: {
-                        Authorization: `Bearer ${token}`
-                    }
-                }
-            );
+            const res = await getSession(id);
             if (res.data.success && res.data.quiz) {
                 setQuiz(res.data.quiz);
                 
@@ -71,16 +63,7 @@ function QuizSession() {
 
         setSubmitting(true);
         try {
-            const token = localStorage.getItem("token");
-            const res = await axios.post(
-                `http://localhost:5000/api/preparation/${id}/quiz/submit`,
-                { answers: Object.values(selectedAnswers) },
-                {
-                    headers: {
-                        Authorization: `Bearer ${token}`
-                    }
-                }
-            );
+            const res = await submitQuiz(id, Object.values(selectedAnswers));
             if (res.data.success) {
                 setResult(res.data.quiz);
                 setQuiz(res.data.quiz);

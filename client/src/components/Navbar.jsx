@@ -2,7 +2,7 @@ import { useState, useEffect, useRef } from "react";
 import { Link, useNavigate, useLocation } from "react-router-dom";
 import { useAuth } from "../context/AuthContext";
 import ThemeToggle from "./ThemeToggle";
-import axios from "axios";
+import { getNotifications, markNotificationRead } from "../services/analyticsService";
 import logo from "../assets/novara-logo.png";
 
 function Navbar() {
@@ -39,16 +39,8 @@ function Navbar() {
 
     const fetchNotifications = async () => {
         try {
-            const token = localStorage.getItem("token");
-            if (!token) return;
-            const res = await axios.get(
-                "http://localhost:5000/api/analytics/notifications",
-                {
-                    headers: {
-                        Authorization: `Bearer ${token}`
-                    }
-                }
-            );
+            if (!localStorage.getItem("token")) return;
+            const res = await getNotifications();
             if (res.data.success) {
                 setNotifications(res.data.notifications || []);
             }
@@ -59,16 +51,7 @@ function Navbar() {
 
     const handleMarkAsRead = async (nId) => {
         try {
-            const token = localStorage.getItem("token");
-            const res = await axios.put(
-                `http://localhost:5000/api/analytics/notifications/${nId}`,
-                {},
-                {
-                    headers: {
-                        Authorization: `Bearer ${token}`
-                    }
-                }
-            );
+            const res = await markNotificationRead(nId);
             if (res.data.success) {
                 setNotifications(prev => prev.map(n => n._id === nId ? { ...n, isRead: true } : n));
             }

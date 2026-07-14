@@ -1,6 +1,10 @@
 import { useState, useEffect } from "react";
 import Navbar from "../../components/Navbar";
-import axios from "axios";
+import {
+    getStudyPlan,
+    generateStudyPlan,
+    updateStudyPlan,
+} from "../../services/studyPlanService";
 
 function StudyPlanner() {
     const [studyPlan, setStudyPlan] = useState(null);
@@ -19,15 +23,7 @@ function StudyPlanner() {
 
     const fetchStudyPlan = async () => {
         try {
-            const token = localStorage.getItem("token");
-            const res = await axios.get(
-                "http://localhost:5000/api/study-plan",
-                {
-                    headers: {
-                        Authorization: `Bearer ${token}`
-                    }
-                }
-            );
+            const res = await getStudyPlan();
             if (res.data.success) {
                 setStudyPlan(res.data.studyPlan);
             }
@@ -45,16 +41,10 @@ function StudyPlanner() {
         setGenerating(true);
         setStatusMsg("");
         try {
-            const token = localStorage.getItem("token");
-            const res = await axios.post(
-                "http://localhost:5000/api/study-plan/generate",
-                { targetRole: targetRole.trim(), timeline },
-                {
-                    headers: {
-                        Authorization: `Bearer ${token}`
-                    }
-                }
-            );
+            const res = await generateStudyPlan({
+                targetRole: targetRole.trim(),
+                timeline,
+            });
 
             if (res.data.success) {
                 setStudyPlan(res.data.studyPlan);
@@ -72,16 +62,10 @@ function StudyPlanner() {
         if (toggling) return;
         setToggling(true);
         try {
-            const token = localStorage.getItem("token");
-            const res = await axios.put(
-                "http://localhost:5000/api/study-plan",
-                { weekIndex: weekIdx, taskIndex: taskIdx },
-                {
-                    headers: {
-                        Authorization: `Bearer ${token}`
-                    }
-                }
-            );
+            const res = await updateStudyPlan({
+                weekIndex: weekIdx,
+                taskIndex: taskIdx,
+            });
             if (res.data.success) {
                 setStudyPlan(res.data.studyPlan);
             }
@@ -96,16 +80,7 @@ function StudyPlanner() {
         if (toggling) return;
         setToggling(true);
         try {
-            const token = localStorage.getItem("token");
-            const res = await axios.put(
-                "http://localhost:5000/api/study-plan",
-                { milestoneIndex: mIdx },
-                {
-                    headers: {
-                        Authorization: `Bearer ${token}`
-                    }
-                }
-            );
+            const res = await updateStudyPlan({ milestoneIndex: mIdx });
             if (res.data.success) {
                 setStudyPlan(res.data.studyPlan);
             }

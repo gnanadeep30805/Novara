@@ -1,7 +1,10 @@
 import { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import Navbar from "../../components/Navbar";
-import axios from "axios";
+import {
+    getSessions,
+    generateSession,
+} from "../../services/preparationService";
 
 function PreparationHub() {
     const navigate = useNavigate();
@@ -22,15 +25,7 @@ function PreparationHub() {
 
     const fetchSessions = async () => {
         try {
-            const token = localStorage.getItem("token");
-            const res = await axios.get(
-                "http://localhost:5000/api/preparation",
-                {
-                    headers: {
-                        Authorization: `Bearer ${token}`
-                    }
-                }
-            );
+            const res = await getSessions();
             if (res.data.success) {
                 setSessions(res.data.sessions || []);
             }
@@ -49,21 +44,12 @@ function PreparationHub() {
         setStatusMsg("");
 
         try {
-            const token = localStorage.getItem("token");
-            const res = await axios.post(
-                "http://localhost:5000/api/preparation/generate",
-                {
-                    topic: topic.trim(),
-                    role: role.trim(),
-                    company: company.trim(),
-                    difficulty
-                },
-                {
-                    headers: {
-                        Authorization: `Bearer ${token}`
-                    }
-                }
-            );
+            const res = await generateSession({
+                topic: topic.trim(),
+                role: role.trim(),
+                company: company.trim(),
+                difficulty,
+            });
 
             if (res.data.success) {
                 // Navigate directly to the new session

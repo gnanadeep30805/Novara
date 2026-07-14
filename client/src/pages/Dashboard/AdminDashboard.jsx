@@ -1,7 +1,13 @@
 import { useState, useEffect } from "react";
 import { useAuth } from "../../context/AuthContext";
 import Navbar from "../../components/Navbar";
-import axios from "axios";
+import {
+    getAdminStats,
+    getAllUsers,
+    updateUserRole,
+    deleteUser,
+    broadcastNotification,
+} from "../../services/adminService";
 
 function AdminDashboard() {
     const { user, logout } = useAuth();
@@ -30,15 +36,7 @@ function AdminDashboard() {
 
     const fetchAdminStats = async () => {
         try {
-            const token = localStorage.getItem("token");
-            const res = await axios.get(
-                "http://localhost:5000/api/admin/stats",
-                {
-                    headers: {
-                        Authorization: `Bearer ${token}`
-                    }
-                }
-            );
+            const res = await getAdminStats();
             if (res.data.success) {
                 setStats(res.data.stats);
             }
@@ -51,15 +49,7 @@ function AdminDashboard() {
 
     const fetchUsersList = async () => {
         try {
-            const token = localStorage.getItem("token");
-            const res = await axios.get(
-                "http://localhost:5000/api/admin/users",
-                {
-                    headers: {
-                        Authorization: `Bearer ${token}`
-                    }
-                }
-            );
+            const res = await getAllUsers();
             if (res.data.success) {
                 setUsers(res.data.users || []);
             }
@@ -75,16 +65,7 @@ function AdminDashboard() {
         if (!window.confirm(`Are you sure you want to change this user's role to ${nextRole}?`)) return;
 
         try {
-            const token = localStorage.getItem("token");
-            const res = await axios.put(
-                `http://localhost:5000/api/admin/users/${targetUserId}/role`,
-                { role: nextRole },
-                {
-                    headers: {
-                        Authorization: `Bearer ${token}`
-                    }
-                }
-            );
+            const res = await updateUserRole(targetUserId, nextRole);
             if (res.data.success) {
                 setUsers(prev => prev.map(u => u._id === targetUserId ? { ...u, role: nextRole } : u));
                 fetchAdminStats(); // Recalculate admin counts
@@ -99,15 +80,7 @@ function AdminDashboard() {
         if (!window.confirm("Are you sure you want to permanently delete this user account and all their prep/mock histories? This action is irreversible.")) return;
 
         try {
-            const token = localStorage.getItem("token");
-            const res = await axios.delete(
-                `http://localhost:5000/api/admin/users/${targetUserId}`,
-                {
-                    headers: {
-                        Authorization: `Bearer ${token}`
-                    }
-                }
-            );
+            const res = await deleteUser(targetUserId);
             if (res.data.success) {
                 setUsers(prev => prev.filter(u => u._id !== targetUserId));
                 fetchAdminStats();
@@ -126,16 +99,10 @@ function AdminDashboard() {
         setBroadcastStatus("");
 
         try {
-            const token = localStorage.getItem("token");
-            const res = await axios.post(
-                "http://localhost:5000/api/admin/broadcast",
-                { title: broadcastTitle.trim(), message: broadcastMsg.trim() },
-                {
-                    headers: {
-                        Authorization: `Bearer ${token}`
-                    }
-                }
-            );
+            const res = await broadcastNotification({
+                title: broadcastTitle.trim(),
+                message: broadcastMsg.trim(),
+            });
             if (res.data.success) {
                 setBroadcastStatus("Broadcast sent successfully to all candidates!");
                 setBroadcastTitle("");

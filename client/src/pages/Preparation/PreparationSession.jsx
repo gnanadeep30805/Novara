@@ -1,7 +1,11 @@
 import { useState, useEffect } from "react";
 import { useParams, useNavigate } from "react-router-dom";
 import Navbar from "../../components/Navbar";
-import axios from "axios";
+import {
+    getSession,
+    markQuestionComplete,
+    startQuiz,
+} from "../../services/preparationService";
 
 function PreparationSession() {
     const { id } = useParams();
@@ -25,15 +29,7 @@ function PreparationSession() {
 
     const fetchSessionDetails = async () => {
         try {
-            const token = localStorage.getItem("token");
-            const res = await axios.get(
-                `http://localhost:5000/api/preparation/${id}`,
-                {
-                    headers: {
-                        Authorization: `Bearer ${token}`
-                    }
-                }
-            );
+            const res = await getSession(id);
             if (res.data.success) {
                 setSession(res.data.session);
                 setQuestions(res.data.questions || []);
@@ -49,16 +45,7 @@ function PreparationSession() {
     const handleToggleQuestion = async (qId) => {
         setTogglingId(qId);
         try {
-            const token = localStorage.getItem("token");
-            const res = await axios.put(
-                `http://localhost:5000/api/preparation/question/${qId}`,
-                {},
-                {
-                    headers: {
-                        Authorization: `Bearer ${token}`
-                    }
-                }
-            );
+            const res = await markQuestionComplete(qId);
             if (res.data.success) {
                 // Update local question list
                 setQuestions(prev => prev.map(q => q._id === qId ? res.data.question : q));
@@ -75,16 +62,7 @@ function PreparationSession() {
     const handleStartQuiz = async () => {
         setQuizGenerating(true);
         try {
-            const token = localStorage.getItem("token");
-            const res = await axios.post(
-                `http://localhost:5000/api/preparation/${id}/quiz`,
-                {},
-                {
-                    headers: {
-                        Authorization: `Bearer ${token}`
-                    }
-                }
-            );
+            const res = await startQuiz(id);
             if (res.data.success) {
                 // Navigate to quiz solver route
                 navigate(`/preparation/${id}/quiz`);

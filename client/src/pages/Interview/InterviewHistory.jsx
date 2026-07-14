@@ -1,6 +1,6 @@
 import { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
-import axios from "axios";
+import { getInterviews } from "../../services/interviewService";
 import Navbar from "../../components/Navbar";
 
 function InterviewHistory() {
@@ -16,16 +16,7 @@ function InterviewHistory() {
 
     const fetchInterviews = async () => {
         try {
-            const token = localStorage.getItem("token");
-
-            const res = await axios.get(
-                "http://localhost:5000/api/interviews",
-                {
-                    headers: {
-                        Authorization: `Bearer ${token}`,
-                    },
-                }
-            );
+            const res = await getInterviews();
 
             setInterviews(res.data.interviews || []);
         } catch (err) {

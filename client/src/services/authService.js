@@ -1,12 +1,4 @@
-import axios from "axios";
-
-const API_BASE_URL =
-    process.env.REACT_APP_API_URL || "http://localhost:5000";
-
-const api = axios.create({
-    baseURL: API_BASE_URL,
-    withCredentials: true,
-});
+import api from "../config/api";
 
 export const loginUser = (formData) => api.post("/api/auth/login", formData);
 
@@ -21,5 +13,8 @@ export const resendVerificationEmail = (email) =>
 
 export const forgotPassword = (email) =>
     api.post("/api/auth/forgot-password", { email });
+
+export const resetPassword = (token, password) =>
+    api.post(`/api/auth/reset-password/${token}`, { password });
 
 export default api;

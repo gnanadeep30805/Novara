@@ -52,7 +52,7 @@ function VerifyEmail() {
                         </h2>
                         <p className="text-gray-600 mb-6">{message}</p>
                         <Link
-                            to="/"
+                            to="/login"
                             className="inline-block bg-indigo-600 text-white px-6 py-3 rounded-xl font-semibold hover:bg-indigo-700 transition"
                         >
                             Go to Login
@@ -71,7 +71,7 @@ function VerifyEmail() {
                         </h2>
                         <p className="text-gray-600 mb-6">{message}</p>
                         <Link
-                            to="/"
+                            to="/login"
                             className="inline-block bg-indigo-600 text-white px-6 py-3 rounded-xl font-semibold hover:bg-indigo-700 transition"
                         >
                             Back to Login

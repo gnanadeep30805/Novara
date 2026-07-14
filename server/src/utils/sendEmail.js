@@ -46,3 +46,32 @@ export const sendVerificationEmail = async (email, token) => {
         `,
     });
 };
+
+export const sendPasswordResetEmail = async (email, token) => {
+    const clientUrl = process.env.CLIENT_URL || "http://localhost:3000";
+    const resetUrl = `${clientUrl}/#/reset-password/${token}`;
+
+    if (!isEmailConfigured()) {
+        console.log("\n--- Password reset (SMTP not configured) ---");
+        console.log(`To: ${email}`);
+        console.log(`Reset: ${resetUrl}`);
+        console.log("----------------------------------------------\n");
+        return;
+    }
+
+    const transporter = getTransporter();
+    const from = process.env.SMTP_FROM || process.env.SMTP_USER;
+
+    await transporter.sendMail({
+        from: `"Novara" <${from}>`,
+        to: email,
+        subject: "Reset your Novara password",
+        html: `
+            <h2>Password Reset</h2>
+            <p>Click the link below to reset your password:</p>
+            <a href="${resetUrl}">${resetUrl}</a>
+            <p>This link expires in 24 hours.</p>
+            <p>If you did not request this, you can ignore this email.</p>
+        `,
+    });
+};

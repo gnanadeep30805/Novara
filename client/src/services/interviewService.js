@@ -1,32 +1,17 @@
-import axios from "axios";
+import api, { withAuth } from "../config/api";
 
-const API_URL = "http://localhost:5000/api/interviews";
-
-const authHeader = () => ({
-    headers: {
-        Authorization: `Bearer ${localStorage.getItem("token")}`,
-    },
-});
+const base = "/api/interviews";
 
 export const createInterview = (data) =>
-    axios.post(`${API_URL}/create`, data, authHeader());
+    api.post(`${base}/create`, data, withAuth());
 
-export const getInterviews = () =>
-    axios.get(API_URL, authHeader());
+export const getInterviews = () => api.get(base, withAuth());
 
 export const getInterviewById = (id) =>
-    axios.get(`${API_URL}/${id}`, authHeader());
+    api.get(`${base}/${id}`, withAuth());
 
 export const submitAnswer = (id, data) =>
-    axios.post(
-        `${API_URL}/${id}/answer`,
-        data,
-        authHeader()
-    );
+    api.post(`${base}/${id}/answer`, data, withAuth());
 
 export const completeInterview = (id) =>
-    axios.post(
-        `${API_URL}/${id}/complete`,
-        {},
-        authHeader()
-    );
+    api.post(`${base}/${id}/complete`, {}, withAuth());

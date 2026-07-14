@@ -24,6 +24,7 @@ import {
     Sparkles,
     Eye
 } from "lucide-react";
+import { API_BASE_URL } from "../../config/api";
 import Navbar from "../../components/Navbar.jsx";
 
 export default function ResumeIntelligence() {
@@ -438,7 +439,7 @@ export default function ResumeIntelligence() {
                                         <span>Analyzed on {new Date(currentAnalysis.createdAt).toLocaleString()}</span>
                                         <span>•</span>
                                         <a
-                                            href={`http://localhost:5000${currentAnalysis.resumeUrl}`}
+                                            href={`${API_BASE_URL}${currentAnalysis.resumeUrl}`}
                                             target="_blank"
                                             rel="noopener noreferrer"
                                             className="text-indigo-600 hover:underline flex items-center gap-0.5"

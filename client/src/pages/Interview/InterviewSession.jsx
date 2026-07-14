@@ -1,6 +1,10 @@
 import { useEffect, useState } from "react";
 import { useParams, useNavigate } from "react-router-dom";
-import axios from "axios";
+import {
+    getInterviewById,
+    submitAnswer,
+    completeInterview,
+} from "../../services/interviewService";
 import Navbar from "../../components/Navbar";
 
 function InterviewSession() {
@@ -21,16 +25,7 @@ function InterviewSession() {
 
     const fetchInterview = async () => {
         try {
-            const token = localStorage.getItem("token");
-
-            const res = await axios.get(
-                `http://localhost:5000/api/interviews/${id}`,
-                {
-                    headers: {
-                        Authorization: `Bearer ${token}`,
-                    },
-                }
-            );
+            const res = await getInterviewById(id);
 
             setInterview(res.data.interview);
         } catch (err) {
@@ -52,21 +47,10 @@ function InterviewSession() {
         try {
             setSubmitting(true);
 
-            const token = localStorage.getItem("token");
-
-            await axios.post(
-                `http://localhost:5000/api/interviews/${id}/answer`,
-                {
-                    question:
-                        interview.questions[currentQuestion],
-                    answer,
-                },
-                {
-                    headers: {
-                        Authorization: `Bearer ${token}`,
-                    },
-                }
-            );
+            await submitAnswer(id, {
+                question: interview.questions[currentQuestion],
+                answer,
+            });
 
             setAnswer("");
 
@@ -78,15 +62,7 @@ function InterviewSession() {
                     (prev) => prev + 1
                 );
             } else {
-                await axios.post(
-                    `http://localhost:5000/api/interviews/${id}/complete`,
-                    {},
-                    {
-                        headers: {
-                            Authorization: `Bearer ${token}`,
-                        },
-                    }
-                );
+                await completeInterview(id);
 
                 navigate(`/result/${id}`);
             }

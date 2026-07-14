@@ -1,6 +1,6 @@
 import { useState, useEffect } from "react";
 import Navbar from "../../components/Navbar";
-import axios from "axios";
+import { getAnalytics, getAchievements } from "../../services/analyticsService";
 
 function Analytics() {
     const [stats, setStats] = useState(null);
@@ -14,12 +14,9 @@ function Analytics() {
 
     const fetchData = async () => {
         try {
-            const token = localStorage.getItem("token");
-            const headers = { Authorization: `Bearer ${token}` };
-            
             const [statsRes, achRes] = await Promise.all([
-                axios.get("http://localhost:5000/api/analytics", { headers }),
-                axios.get("http://localhost:5000/api/analytics/achievements", { headers })
+                getAnalytics(),
+                getAchievements(),
             ]);
 
             if (statsRes.data.success) {
