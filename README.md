@@ -7,7 +7,6 @@
 ![Node](https://img.shields.io/badge/Node.js-Backend-339933?style=for-the-badge&logo=node.js)
 ![MongoDB](https://img.shields.io/badge/MongoDB-Database-47A248?style=for-the-badge&logo=mongodb)
 ![Gemini AI](https://img.shields.io/badge/Google-Gemini%20AI-blue?style=for-the-badge)
-![Status](https://img.shields.io/badge/Status-Active%20Development-orange?style=for-the-badge)
 
 ### **Prepare • Practice • Perform**
 
